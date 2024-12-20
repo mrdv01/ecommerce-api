@@ -91,12 +91,17 @@ ProductSchema.virtual("averageRating").get(function () {
     const product = this;
     let ratingTotal = 0;
     product?.reviews?.forEach((review) => {
-        ratingTotal += review?.rating;
-    })
+        ratingTotal += review?.rating || 0; // Add rating if it exists
+    });
 
-    const averageRating = Number(ratingTotal / product?.reviews?.length).toFixed(1);
+    const reviewCount = product?.reviews?.length || 0; // Handle empty array
+    const averageRating = reviewCount > 0
+        ? (ratingTotal / reviewCount).toFixed(1)
+        : "0"; // Default to "0.0" if no reviews
+
     return averageRating;
-})
+});
+
 
 
 const Product = mongoose.model("Product", ProductSchema);

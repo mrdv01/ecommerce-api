@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors';
 import dbConnect from '../config/dbConnect.js';
 import dotenv from 'dotenv'
 import userRoutes from '../routes/userRoute.js';
@@ -18,6 +19,7 @@ dotenv.config();
 
 dbConnect();
 const app = express();
+app.use(cors());
 //stripe webhook
 
 const stripe = new Stripe(process.env.STRIPE_KEY);
@@ -28,7 +30,7 @@ const endpointSecret = 'whsec_029113306f4c16c92b2e6c42d5ea8f22810525364b9f8bf9f8
 
 
 // Match the raw body to content type application/json
-app.post('/webhooks', express.raw({ type: 'application/json' }), async (request, response) => {
+app.post('/webhook', express.raw({ type: 'application/json' }), async (request, response) => {
     const sig = request.headers['stripe-signature'];
 
     let event;
@@ -39,9 +41,10 @@ app.post('/webhooks', express.raw({ type: 'application/json' }), async (request,
         event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
     }
     catch (err) {
-
+        console.log("err", err.message);
 
         response.status(400).send(`Webhook Error: ${err.message}`);
+        return;
     }
     if (event.type === "checkout.session.completed") {
         //update order
@@ -107,6 +110,7 @@ app.use('/api/v1/coupons', couponRouter);
 //error handler
 app.use(notFound)
 app.use(globalErrorHandler);
+
 
 export default app;
 

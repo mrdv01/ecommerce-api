@@ -14,10 +14,9 @@ export const createCategoryCtrl = asyncHandler(async (req, res) => {
     }
     //create
     const category = await Category.create({
-        name: name.toLowerCase(),
+        name: name?.toLowerCase(),
         user: req.userAuthId,
-        image: req.file.path
-
+        image: req?.file?.path
     });
 
     res.json({
@@ -33,7 +32,7 @@ export const createCategoryCtrl = asyncHandler(async (req, res) => {
 // @access  Public
 
 export const getAllCategoriesCtrl = asyncHandler(async (req, res) => {
-    const categories = await Category.find();
+    const categories = await Category.find().populate('user');
     if (!categories) {
         throw new Error("no categories found")
     }

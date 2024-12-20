@@ -17,25 +17,25 @@ dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_KEY);
 
 export const createOrderCtrl = asyncHandler(async (req, res) => {
-    // get the coupon
-    const { coupon } = req?.query;
+    // // get the coupon
+    // const { coupon } = req?.query;
 
-    const couponFound = await Coupon.findOne({
-        code: coupon?.toUpperCase()
-    })
+    // const couponFound = await Coupon.findOne({
+    //     code: coupon?.toUpperCase()
+    // })
 
-    if (couponFound?.isExpired) {
-        throw new Error("coupon has expired")
-    }
+    // if (couponFound?.isExpired) {
+    //     throw new Error("coupon has expired")
+    // }
 
-    if (!couponFound) {
-        throw new Error("invalid coupon");
+    // if (!couponFound) {
+    //     throw new Error("invalid coupon");
 
-    }
+    // }
 
     //get discont
 
-    const discount = couponFound?.discount / 100;
+    // const discount = couponFound?.discount / 100;
 
 
     //get the payload(customer,orderItem,totalPrice,shippingAddress)
@@ -57,7 +57,8 @@ export const createOrderCtrl = asyncHandler(async (req, res) => {
         user: user?._id,
         orderItems,
         shippingAddress,
-        totalPrice: couponFound ? totalPrice - totalPrice * discount : totalPrice,
+        // totalPrice: couponFound ? totalPrice - totalPrice * discount : totalPrice,
+        totalPrice
 
     });
 
@@ -118,7 +119,7 @@ export const createOrderCtrl = asyncHandler(async (req, res) => {
 //@access private
 
 export const getAllOrdersCtrl = asyncHandler(async (req, res) => {
-    const orders = await Order.find();
+    const orders = await Order.find().populate("user");
     res.json({
         success: true,
         message: "orders fetched successfully",

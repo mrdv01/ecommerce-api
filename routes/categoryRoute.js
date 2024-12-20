@@ -6,7 +6,9 @@ import upload from "../config/fileUpload.js";
 
 const categoriesRouter = exppress.Router();
 
-categoriesRouter.post('/', isLoggedIn, upload.single("file"), createCategoryCtrl);
+categoriesRouter.post('/', isLoggedIn,
+    upload.single("file"),
+    createCategoryCtrl);
 categoriesRouter.get('/', getAllCategoriesCtrl);
 categoriesRouter.get('/:id', getSingleCategoryCtrl);
 categoriesRouter.put('/:id', isLoggedIn, updateCategoryCtrl);

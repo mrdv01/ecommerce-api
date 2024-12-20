@@ -6,7 +6,7 @@ const couponRouter = express.Router();
 
 couponRouter.post("/", isLoggedIn, isAdmin, createCouponCtrl);
 couponRouter.get("/", getAllCouponCtrl);
-couponRouter.get("/:id", getCouponCtrl);
+couponRouter.get("/single", getCouponCtrl);
 couponRouter.put("/update/:id", isLoggedIn, isAdmin, updateCouponCtrl);
 couponRouter.delete("/delete/:id", isLoggedIn, isAdmin, deleteCouponCtrl);
 

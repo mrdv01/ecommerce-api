@@ -31,7 +31,7 @@ export const createColorCtrl = asyncHandler(async (req, res) => {
 // @access  Public
 
 export const getAllColorsCtrl = asyncHandler(async (req, res) => {
-    const colors = await Color.find();
+    const colors = await Color.find().populate('user');
     res.json({
         status: "success",
         message: "colors fetched successfully",

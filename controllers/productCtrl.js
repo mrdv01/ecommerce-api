@@ -13,6 +13,7 @@ export const createProductCtrl = asyncHandler(async (req, res) => {
 
 
     const { name, description, category, sizes, colors, price, totalQty, brand } = req.body;
+
     const convertedImgs = req.files.map((file) => file?.path);
     // check product exists
     const productExists = await Product.findOne({ name });
@@ -163,7 +164,13 @@ export const getProductsCtrl = asyncHandler(async (req, res) => {
 export const getSingleProductCtrl = asyncHandler(async (req, res) => {
     const { id } = req.params;
 
-    const product = await Product.findById(id).populate("reviews");
+    const product = await Product.findById(req.params.id).populate({
+        path: "reviews",
+        populate: {
+            path: "user",
+            select: "fullname",
+        },
+    });
     if (!product) {
         throw new Error("product not found")
     }
@@ -182,10 +189,12 @@ export const getSingleProductCtrl = asyncHandler(async (req, res) => {
 
 export const updateProductCtrl = asyncHandler(async (req, res) => {
     const { name, description, category, sizes, colors, price, totalQty, brand } = req.body;
+    const convertedImgs = req.files.map((file) => file?.path);
     const product = await Product.findByIdAndUpdate(req.params.id, {
-        name, description, category, sizes, colors, price, totalQty, brand
+        name, description, category, sizes, colors, price, totalQty, brand, images: convertedImgs,
     }, {
-        new: true
+        new: true,
+        runValidators: true,
     })
     res.json({
         status: "success",

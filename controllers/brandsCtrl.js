@@ -32,7 +32,7 @@ export const createBrandCtrl = asyncHandler(async (req, res) => {
 // @access  Public
 
 export const getAllBrandsCtrl = asyncHandler(async (req, res) => {
-    const brands = await Brand.find();
+    const brands = await Brand.find().populate('user');
     if (!brands) {
         throw new Error("no brand found")
     }
